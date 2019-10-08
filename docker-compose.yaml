@@ -1,0 +1,17 @@
+version: "2"
+
+services:
+  pptp-server:
+    build: .
+    image: scue/pptp-server:0.1.0
+    environment:
+      - REDIRECT=1081
+      - USERNAME=scue
+      - PASSWORD=awesome
+    privileged: yes
+    volumes:
+      - /usr/local/bin/shadowsocks2-linux:/usr/local/bin/shadowsocks2-linux
+    ports:
+      - "1723:1723"
+    network_mode: "bridge"
+    command: sh -c "pptpd && syslogd -n -O /dev/stdout"
