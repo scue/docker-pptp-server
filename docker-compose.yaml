@@ -4,10 +4,32 @@ services:
   pptp-server:
     build: .
     image: scue/pptp-server:0.1.0
+    container_name: pptp-server
     environment:
       - USERNAME=scue
       - PASSWORD=awesome
+      # - REDIRECT:1081
     privileged: yes
+    networks:
+      - pptp
     ports:
       - "1723:1723"
-    network_mode: "bridge"
+    # volumes:
+    #   - ./shadowsocks2-linux:/usr/local/bin/shadowsocks2-linux
+
+  pptp-client:
+    image: vimagick/pptp
+    external_links:
+      - pptp-server:pptp-server
+    environment:
+      - SERVER=pptp-server
+      - TUNNEL=ppp0
+      - USERNAME=scue
+      - PASSWORD=awesome
+    privileged: yes
+    networks:
+      - pptp
+
+networks:
+  pptp:
+    external: true
